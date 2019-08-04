@@ -10,4 +10,7 @@ build
 # pycharm
 .idea
 
+# python
+
+*.py[c]
 
