@@ -1,0 +1,13 @@
+# 虚拟环境
+venv
+
+# 发行版本
+dist
+
+# 编译
+build
+
+# pycharm
+.idea
+
+
