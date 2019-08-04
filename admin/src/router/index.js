@@ -108,7 +108,7 @@ export const constantRoutes = [
     redirect: '/nested/menu1',
     name: 'Nested',
     meta: {
-      title: '服务器配置',
+      title: '服务器配置项',
       icon: 'nested'
     },
     children: [
