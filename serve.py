@@ -1,4 +1,5 @@
 from tornado.ioloop import IOLoop
+import tornado.autoreload
 
 from application import make_app
 from application.tcp_server import MarketServer, TradeServer

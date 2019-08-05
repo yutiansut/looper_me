@@ -34,7 +34,7 @@ class CoreServer(BaseServer):
         """ 处理不同情况的请求 """
         if not data.auth:
             # warnings.warn("数据来源无法进行校验")
-            await stream.write(REPLY['unsupported_type'])
+            await stream.write(REPLY['unsupported_req'])
         else:
             await self.handler(data.type, data.content, stream)
 
