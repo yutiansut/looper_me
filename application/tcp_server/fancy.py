@@ -10,7 +10,7 @@ from application.tcp_server.protocol import DataProtocol
 
 class BaseServer(TCPServer):
 
-    def handle_stream(
+    async def handle_stream(
             self, stream: IOStream, address: tuple
     ) -> Optional[Awaitable[None]]:
         """ 处理流 """
@@ -27,7 +27,7 @@ class CoreServer(BaseServer):
         """ 连接丢失 """
         logger.info("connection lost from ", address, "exception: ", exception)
 
-    async def handler(self, type, content, stream):
+    async def handler(self, type, content, stream, address):
         raise NotImplemented
 
     async def event_handler(self, data: DataProtocol, stream: IOStream, address:tuple):
