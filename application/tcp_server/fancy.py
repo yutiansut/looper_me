@@ -30,21 +30,20 @@ class CoreServer(BaseServer):
     async def handler(self, type, content, stream):
         raise NotImplemented
 
-    async def event_handler(self, data: DataProtocol, stream):
+    async def event_handler(self, data: DataProtocol, stream: IOStream, address:tuple):
         """ 处理不同情况的请求 """
         if not data.auth:
             # warnings.warn("数据来源无法进行校验")
             await stream.write(REPLY['unsupported_req'])
         else:
-            await self.handler(data.type, data.content, stream)
+            await self.handler(data.type, data.content, stream, address)
 
     async def handle_stream(self, stream: IOStream, address: tuple):
-
         self.connection_made(address, stream)
         while True:
             try:
                 data = await stream.read_until(AUTH_KEY)
-                await self.event_handler(DataProtocol(data), stream)
+                await self.event_handler(DataProtocol(data), stream, address)
             except StreamClosedError:
                 self.connection_lost(address, StreamClosedError)
                 break

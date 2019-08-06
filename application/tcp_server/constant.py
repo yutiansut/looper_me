@@ -8,3 +8,34 @@ REPLY = {
     "failed": bytes('{"result": "failed", "message":"请求失败"}', encoding="utf-8"),
     "connect_reply": bytes('{"result": "success", message:"连接建立成功"}', encoding="utf-8")
 }
+
+"""
+type: data_req
+content {
+        "des":local_symbol,
+        "start": start_date,
+        "end": end_date,
+        } 
+
+"""
+"""
+type: subscribe
+content: {
+            "des":local_symbol,
+        }
+ 
+"""
+
+"""
+type: tick
+content:{
+    "data":tick
+}
+"""
+
+#
+
+
+REQ_TYPE = ["data_req", "subsribe", "tick"]
+
+# 解析函数
