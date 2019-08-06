@@ -5,7 +5,7 @@ from tornado.tcpserver import TCPServer
 
 from application.logger import logger
 from application.tcp_server.constant import AUTH_KEY, REPLY
-from application.tcp_server.protocal import DataProtocol
+from application.tcp_server.protocol import DataProtocol
 
 
 class BaseServer(TCPServer):
