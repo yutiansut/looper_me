@@ -23,9 +23,7 @@ class Buffer:
             return
         # 推送tick到源
         self.cur_area.setdefault(tick.feature, []).append(tick)
-
-
-        # todo: 如果满足条件那么就 进行拜占庭选举
+        # todo: 如果满足条件那么就 进行拜占庭选举 --->
 
         # todo: 根据订阅列表进行推送  || 写入数据库
 
