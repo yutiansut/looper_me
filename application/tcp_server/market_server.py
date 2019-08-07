@@ -21,8 +21,9 @@ class MarketServer(CoreServer):
         self.gloabl[address[0]] = stream
 
     def connection_lost(self, address: tuple, exception):
-        del self.gloabl[address[0]]
-        del self.subscribed_pool[address]
+        # del self.gloabl[address[0]]
+        # del self.subscribed_pool[address]
+        pass
 
     def process_tick(self, tick):
         if tick.local_symbol not in self.buffers:
