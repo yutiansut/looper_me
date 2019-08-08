@@ -36,7 +36,6 @@ class MarketServer(CoreServer):
 
     async def subscribe(self, stream, address):
         # 发起订阅请求
-
         self.subscribed_pool[address] = stream
 
     async def handler(self, type, content, stream, address):

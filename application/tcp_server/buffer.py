@@ -48,5 +48,5 @@ class Buffer:
                     res = ticks[0]
             # todo: 根据订阅列表进行推送  || 写入数据库
             for addr, stream in self.server.subscribed_pool.items():
-                await stream.write(res)
+                # await stream.write(res)
                 self.cur_area.clear()
