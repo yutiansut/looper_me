@@ -34,7 +34,7 @@ module.exports = {
     open: true,
     overlay: {
       warnings: false,
-      errors: true
+      errors: false
     },
     proxy: {
       // change xxx-api/login => mock/login
