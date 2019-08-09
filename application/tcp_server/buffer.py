@@ -1,6 +1,5 @@
 from time import time
 from application.global_variable import ORIGIN_NUMBER
-from application.tcp_server.mongo import client
 
 class Buffer:
 
