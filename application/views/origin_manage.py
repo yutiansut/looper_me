@@ -1,16 +1,17 @@
 """
-ip_manage views ----->
-后台管理 ip视图函数
+origin_manage views ----->
+后台管理 origin视图函数
 """
+from application.model import db
 from application.views import BaseHandle
 from application.tcp_server import md_server
 from application.common import true_return, false_return
-from application.model import db
 
-class IpHandler(BaseHandle):
+
+class OriginHandler(BaseHandle):
     def get(self):
         data = []
-        for ip in list(md_server.global_connection.keys()):
+        for ip in list(md_server.tick_origin):
             data.append({'ip': ip})
         self.write(true_return(data=data))
 

@@ -1,11 +1,15 @@
+from application.global_variable import KEY
+from data_pointer.constant import AUTH_KEY
+
+
 class DataProtocol:
     """ 解析请求 """
 
     def __init__(self, data):
         if isinstance(data, bytes):
-            self.data = str(data, encoding="utf-8").replace("__d41d8cd98f00b204e9800998ecf8427e__", "")
+            self.data = str(data, encoding="utf-8").replace(AUTH_KEY.decode(), "")
         else:
-            self.data = data.replace("__d41d8cd98f00b204e9800998ecf8427e__", "")
+            self.data = data.replace(AUTH_KEY, "")
         self.type = None
         self.content = None
         self.auth = False
@@ -29,7 +33,8 @@ class DataProtocol:
         if not self.parse_result:
             # 解析失败
             return
-        self.auth = True
+        if self.key == KEY:
+            self.auth = True
 
     def __repr__(self):
         return f"DataProtocol type: {self.type}, content: {self.content}"
