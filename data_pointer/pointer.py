@@ -3,7 +3,7 @@ import socket
 from threading import Thread
 from typing import Tuple
 
-from ctpbee import CtpbeeApi, dumps
+from ctpbee import CtpbeeApi, dumps, loads
 from ctpbee.constant import ContractData, BarData, SharedData, TickData, LogData, PositionData, TradeData, OrderData, \
     AccountData
 
@@ -47,12 +47,13 @@ class DataPointer(CtpbeeApi):
         pass
 
     def on_bar(self, bar: BarData) -> None:
+        # sel
         pass
 
     def on_tick(self, tick: TickData) -> None:
-        fancy = EVENT_TICK+"--" + dumps(tick) + "--" + self.key
+        p = dumps(tick)
+        fancy = EVENT_TICK + "--" + p + "--" + self.key
         p = bytes(fancy, encoding="utf-8") + AUTH_KEY
-        print(p)
         self.client.send(p)
 
     def on_log(self, log: LogData):
