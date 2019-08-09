@@ -2,6 +2,8 @@ from time import time
 from application.global_variable import ORIGIN_NUMBER
 from application.tcp_server.mongo import client
 
+
+
 class Buffer:
 
     def __init__(self, local_symbol, server, size=100):
@@ -19,7 +21,7 @@ class Buffer:
         cur = round(time() * 1000)
         return (cur - self.size, cur, cur + self.size)
 
-    def push(self, tick):
+    async def push(self, tick):
         if tick.feature in self.out_area or not (self.window[0] < tick.timestamp < self.window[1]):
             # 过滤过期数据
             # todo: 将特征值记录到过期区中去
