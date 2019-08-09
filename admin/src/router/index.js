@@ -48,7 +48,7 @@ export const constantRoutes = [
     redirect: '/dashboard',
     children: [{
       path: 'dashboard',
-      name: 'Dashboard',
+      name: '控制台',
       component: () => import('@/views/dashboard/index'),
       meta: { title: 'Ctpbee', icon: 'dashboard' }
     }]
@@ -65,13 +65,13 @@ export const constantRoutes = [
         path: 'table',
         name: 'Table',
         component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        meta: { title: '数据下载', icon: 'table' }
       },
       {
         path: 'tree',
         name: 'Tree',
         component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        meta: { title: '数据查找', icon: 'tree' }
       }
     ]
   },
@@ -84,7 +84,7 @@ export const constantRoutes = [
         path: 'index',
         name: 'ip_manage',
         component: () => import('@/views/form/index'),
-        meta: { title: 'ip管理', icon: 'form' }
+        meta: { title: 'IP管理', icon: 'form' }
       }
     ]
   },
