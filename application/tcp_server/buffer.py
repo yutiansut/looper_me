@@ -1,6 +1,6 @@
 from time import time
 from application.global_variable import ORIGIN_NUMBER
-
+from application.tcp_server.mongo import client
 
 class Buffer:
 
@@ -35,13 +35,13 @@ class Buffer:
                                                 }
         }
         """
-        self.cur_area.setdefault(tick.identity_feature, {tick.data_feature: [], 'all': 1})[tick.data_feature].append(
+        self.cur_area.setdefault(tick.identity_feature, {'all': 0, tick.data_feature: []})[tick.data_feature].append(
             tick)
         self.cur_area[tick.identity_feature]['all'] += 1
         # todo: 如果满足条件那么就 进行拜占庭选举 --->
         if self.cur_area[tick.identity_feature]['all'] >= ORIGIN_NUMBER:
             max_votes = 0
-            res = None
+            res = ""
             for ticks in self.cur_area[tick.identity_feature].values():
                 if len(ticks) > max_votes:
                     max_votes = len(ticks)
@@ -50,3 +50,5 @@ class Buffer:
             for addr, stream in self.server.subscribed_pool.items():
                 # await stream.write(res)
                 self.cur_area.clear()
+
+
