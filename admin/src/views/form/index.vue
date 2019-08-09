@@ -1,85 +1,96 @@
 <template>
-  <div class="app-container">
-    <el-form ref="form" :model="form" label-width="120px">
-      <el-form-item label="Activity name">
-        <el-input v-model="form.name" />
-      </el-form-item>
-      <el-form-item label="Activity zone">
-        <el-select v-model="form.region" placeholder="please select your zone">
-          <el-option label="Zone one" value="shanghai" />
-          <el-option label="Zone two" value="beijing" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="Activity time">
-        <el-col :span="11">
-          <el-date-picker v-model="form.date1" type="date" placeholder="Pick a date" style="width: 100%;" />
-        </el-col>
-        <el-col :span="2" class="line">-</el-col>
-        <el-col :span="11">
-          <el-time-picker v-model="form.date2" type="fixed-time" placeholder="Pick a time" style="width: 100%;" />
-        </el-col>
-      </el-form-item>
-      <el-form-item label="Instant delivery">
-        <el-switch v-model="form.delivery" />
-      </el-form-item>
-      <el-form-item label="Activity type">
-        <el-checkbox-group v-model="form.type">
-          <el-checkbox label="Online activities" name="type" />
-          <el-checkbox label="Promotion activities" name="type" />
-          <el-checkbox label="Offline activities" name="type" />
-          <el-checkbox label="Simple brand exposure" name="type" />
-        </el-checkbox-group>
-      </el-form-item>
-      <el-form-item label="Resources">
-        <el-radio-group v-model="form.resource">
-          <el-radio label="Sponsor" />
-          <el-radio label="Venue" />
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="Activity form">
-        <el-input v-model="form.desc" type="textarea" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit">Create</el-button>
-        <el-button @click="onCancel">Cancel</el-button>
-      </el-form-item>
-    </el-form>
-  </div>
+<div class="ipTab">
+  <el-table :data="tableData" border style="width: 100%">
+    <el-table-column type="index">
+    </el-table-column>
+    <el-table-column prop="ip" label="ip地址">
+    </el-table-column>
+    <el-table-column prop="address" label="操作">
+      <template slot-scope="scope">
+        <el-button size="mini" type="danger" @click="prohibition(scope.row)">封禁</el-button>
+        <el-button size="mini" type="success" @click="pullBlack(scope.row)">拉黑</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+</div>
 </template>
 
 <script>
 export default {
+  inject:['reload'],
   data() {
     return {
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      }
+      ipURL: this.URL + '/ip_manage',
+      tableData: []
     }
   },
+
   methods: {
-    onSubmit() {
-      this.$message('submit!')
+    getIpData() {
+      this.axios.get(this.ipURL).then(data => {
+        let returnData = data.data
+        if (returnData.success == true) {
+          this.tableData = returnData.data
+        }
+      }).catch(err => {
+        console.log(err);
+      })
     },
-    onCancel() {
-      this.$message({
-        message: 'cancel!',
-        type: 'warning'
+    prohibition(row) {
+      let sendData = {
+        'todo': 'kill',
+        'ip': row.ip
+      }
+      this.axios.post(this.ipURL, this.$qs.stringify(sendData)).then(data => {
+        console.log(data)
+        let returnData = data.data
+        console.log(returnData.success)
+        if (returnData.success == true) {
+          this.$message({
+            message: returnData.msg,
+            type: 'success',
+            center: true
+          });
+          setTimeout(()=>{
+            this.reload()
+          },1500)
+
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    pullBlack(row) {
+      let sendData = {
+        'todo': 'pull_black',
+        'ip': row.ip
+      }
+      this.axios.post(this.ipURL, this.$qs.stringify(sendData)).then(data => {
+        let returnData = data.data
+        if (returnData.success == true) {
+          this.$message({
+            message: returnData.msg,
+            type: 'success',
+            center: true
+          });
+          setTimeout(()=>{
+            this.reload()
+          },1500)
+        }
+      }).catch(err => {
+        console.log(err);
       })
     }
+  },
+
+  mounted() {
+    this.getIpData()
   }
 }
 </script>
 
 <style scoped>
-.line{
-  text-align: center;
+.ipTab {
+  padding: 20px;
 }
 </style>
-

@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 /* Layout */
 import Layout from '@/layout'
-import ajax from "element-ui/packages/upload/src/ajax";
 
 Vue.use(Router)
 
@@ -90,13 +89,25 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/server_manage',
+    path: '/black_house',
     component: Layout,
     children: [
       {
         path: 'index',
-        name: 'data_server',
-        component: () => import('@/views/form/index'),
+        name: 'black_house',
+        component: () => import('@/views/blackHouse/index'),
+        meta: { title: '小黑屋', icon: 'form' }
+      }
+    ]
+  },
+  {
+    path: '/server',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'server',
+        component: () => import('@/views/server/index'),
         meta: { title: '源服务器管理', icon: 'form' }
       }
     ]
@@ -144,4 +155,3 @@ export function resetRouter() {
   router.matcher = newRouter.matcher // reset router
 }
 export default router
-

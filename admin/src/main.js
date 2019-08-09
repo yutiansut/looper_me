@@ -15,6 +15,14 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+import qs from 'qs'
+Vue.use(VueAxios, axios)
+Vue.prototype.$qs = qs
+
+const URL='http://10.40.25.15:8888'
+Vue.prototype.URL=URL
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
