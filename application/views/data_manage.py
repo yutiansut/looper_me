@@ -8,12 +8,15 @@ from application.views import BaseHandle
 from application.common import true_return, false_return
 from application.tcp_server.mongo import MotorClient
 
+#http://10.40.25.15:8888/file?code=zn1910.SHFE+j2005.DCE
 
-async def filter(collection, start=None, end=None, download=False):
+async def filter(collection: list, start: datetime = None, end: datetime = None, download: bool = False):
     data = []
     for colle in collection:
+        """分隔每个种类"""
         if download:
             data.append(colle)
+        """  对应条件查询 """
         motor_client = MotorClient(collection_name=colle)
         if start and end:
             cursor = motor_client.collection.find({"datetime": {'$gte': start, '$lte': end}}).sort('datetime')
@@ -30,7 +33,6 @@ async def filter(collection, start=None, end=None, download=False):
         else:
             cursor = motor_client.collection.find().sort('datetime')
             data.extend([document async for document in cursor if document.pop('_id', None) or 1])
-
     return data
 
 
@@ -44,39 +46,63 @@ class DataHandler(BaseHandle):
         self.write(true_return(data=data))
 
     async def post(self):
-        code = self.get_argument('code')
-        start = self.get_argument('start')
-        end = self.get_argument('end')
-        if not code:
-            return
-        if start:
-            start = datetime.strptime(start, '%Y-%m-%d')
-        if end:
-            end = datetime.strptime(end, '%Y-%m-%d')
-        res = await filter([code], start, end)
-        self.write(true_return(data=res))
+        pass
+        # todo:查看
+        # code = self.get_argument('code')
+        # start = self.get_argument('start', None)
+        # end = self.get_argument('end', None)
+        # """ 检查参数,转换"""
+        # if not code:
+        #     return
+        # code = code.split('+')
+        # try:
+        #     if start:
+        #         start = datetime.strptime(start, '%Y-%m-%d')
+        #     if end:
+        #         end = datetime.strptime(end, '%Y-%m-%d')
+        # except ValueError:
+        #     return
+        # """过滤查询"""
+        # res = await filter(code, start, end)
+        # self.write(true_return(data=res))
 
 
 class DownloadFileHandler(BaseHandle):
+    # def get(self):
+    #     pass
+
     async def post(self):
         code = self.get_argument('code')
         start = self.get_argument('start', None)
         end = self.get_argument('end', None)
+        filename = ''
+        data_csv = ''
+        """ 检查参数,转换参数,设定文件名"""
         if not code:
             return
-        if start:
-            start = datetime.strptime(start, '%Y-%m-%d')
-        if end:
-            end = datetime.strptime(end, '%Y-%m-%d')
-        print(type(code),code)
-        results = await filter([code], start, end, download=True)
-        data_csv = ''
-        filename = '数据下载_{}.csv'.format(code)
+        code = code.split(' ')
+        try:
+            if start:
+                filename += start + "_"
+                start = datetime.strptime(start, '%Y-%m-%d')
+            if end:
+                filename += end + "_"
+                end = datetime.strptime(end, '%Y-%m-%d')
+        except ValueError:
+            return
+        filename = '{}{}.csv'.format(filename, code[0] if len(code) == 1 else 'Many')
+
+        print(type(code), code)
+        """ 过滤查询 """
+        results = await filter(code, start, end, download=True)
+        """ 处理 """
         for item in results:
-            if isinstance(item, str): continue
-            item['datetime'] = datetime.strftime(item['datetime'], '%Y-%m-%d %H:%M:%S')
+            if isinstance(item, dict):
+                item['datetime'] = datetime.strftime(item['datetime'], '%Y-%m-%d %H:%M:%S')
+            item = str(item).replace('{', '').replace('}', '')
             data_csv += '{},\r\n'.format(item, )
-        self.set_header('Content-Type', 'application/csv')
+        """写入"""
+        self.set_header('Content-Type', 'application/octet-stream')
         self.set_header('Content-Disposition', 'filename={}'.format(filename.encode('utf-8').decode('ISO-8859-1')))
         self.write(data_csv)
         self.finish()
