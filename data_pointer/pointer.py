@@ -3,7 +3,7 @@ import socket
 from threading import Thread
 from typing import Tuple
 
-from ctpbee import CtpbeeApi, dumps, loads
+from ctpbee import CtpbeeApi, dumps
 from ctpbee.constant import ContractData, BarData, SharedData, TickData, LogData, PositionData, TradeData, OrderData, \
     AccountData
 

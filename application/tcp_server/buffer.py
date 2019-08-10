@@ -1,8 +1,10 @@
+from copy import deepcopy
 from time import time
+
 from application.global_variable import ORIGIN_NUMBER
-from application.tcp_server.mongo import MotorClient
-from ctpbee import dumps
 from application.tcp_server.helper import cal_feature
+from application.tcp_server.mongo import MotorClient
+
 
 class Buffer:
 
@@ -37,26 +39,31 @@ class Buffer:
                                                 }
         }
         """
-        self.cur_area.setdefault(tick.ident_feature, {'all': 0, tick.data_feature: []})[tick.data_feature].append(
-            tick)
-        self.cur_area[tick.ident_feature]['all'] += 1
-        # 如果满足条件那么就 进行拜占庭选举 --->
-        if self.cur_area[tick.ident_feature]['all'] >= ORIGIN_NUMBER:
-            max_votes = 0
-            res = ""
-            for key, ticks in self.cur_area[tick.ident_feature].items():
-                if key == 'all': continue
-                if len(ticks) > max_votes:
-                    max_votes = len(ticks)
-                    res = ticks[0]
-            # 根据订阅列表进行推送  || 写入数据库
+        self.cur_area.setdefault(tick.ident_feature, {'count': 0, "data": {tick.data_feature: []}})
+        self.cur_area[tick.ident_feature]['count'] += 1
+        self.cur_area[tick.ident_feature]['data'][tick.data_feature].append(tick)
+
+        # 如果满足的数量已经达到要求 --> 立即进行选举
+
+
+        if self.cur_area[tick.ident_feature]['count'] >= ORIGIN_NUMBER:
+            result = sorted(self.cur_area[tick.ident_feature]['data'].items(), key=lambda item: len(item[1])).pop()
+            res = result[1][0]
+            # 根据订阅列表进行推送  &&  写入数据库
+            ident_feature = deepcopy(res.ident_feature)
             delattr(res, 'ident_feature')
             delattr(res, 'data_feature')
             # if res.symbol == 'zn1910':
             #     await self.motor_client.find()
+            if res.symbol == "zn1910":
+                print(res)
             await self.motor_client.insert_one(res._to_dict())
             for addr, stream in self.server.subscribed_pool.items():
                 await stream.write(res)
-                self.cur_area.pop(tick.ident_feature, None)
+
             # 将特征值记录到过期区中去
-            self.out_area.add(tick.ident_feature)
+            self.out_area.add(ident_feature)
+
+            # 立即回收空间 ---> 优化内存
+            self.cur_area.pop(ident_feature, None)
+            del ident_feature
