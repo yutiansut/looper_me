@@ -2,7 +2,7 @@
 origin_manage views ----->
 后台管理 origin视图函数
 """
-from application.model import db
+from application.model import sqlite_client
 from application.views import BaseHandle
 from application.tcp_server import md_server
 from application.common import true_return, false_return
@@ -26,7 +26,7 @@ class OriginHandler(BaseHandle):
         elif todo == 'pull_black':
             md_server.global_connection.pop(ip).close()
             md_server.blacklist.add(ip)
-            db.push(ip)
+            sqlite_client.push(ip)
             self.write(true_return(msg='拉黑成功'))
         else:
             self.write(false_return(msg='操作失败'))

@@ -1,7 +1,7 @@
 import sqlite3
 
 
-class DB:
+class SqliteClient:
     def __init__(self):
         self.conn = sqlite3.connect('blacklist.db')
         self.tablename = 'blacklist'
@@ -44,5 +44,4 @@ class DB:
         self.conn.close()
 
 
-db = DB()
-
+sqlite_client = SqliteClient()

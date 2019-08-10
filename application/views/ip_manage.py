@@ -5,7 +5,7 @@ ip_manage views ----->
 from application.views import BaseHandle
 from application.tcp_server import md_server
 from application.common import true_return, false_return
-from application.model import db
+from application.model import sqlite_client
 
 class IpHandler(BaseHandle):
     def get(self):
@@ -25,7 +25,7 @@ class IpHandler(BaseHandle):
         elif todo == 'pull_black':
             md_server.global_connection.pop(ip).close()
             md_server.blacklist.add(ip)
-            db.push(ip)
+            sqlite_client.push(ip)
             self.write(true_return(msg='拉黑成功'))
         else:
             self.write(false_return(msg='操作失败'))
