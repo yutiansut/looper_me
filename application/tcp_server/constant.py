@@ -35,7 +35,12 @@ content:{
 
 #
 
+REQ_TICK = "tick"
+REQ_SUB = "subscribe"
+REQ_DATA = "data_req"
 
-REQ_TYPE = ["data_req", "subsribe", "tick"]
+
+REQ_TYPE =[REQ_DATA, REQ_SUB, REQ_TICK]
+
 
 # 解析函数
