@@ -1,6 +1,6 @@
 from ctpbee import loads
 
-from application.model import db
+from application.model import blacklist_db
 from application.tcp_server.buffer import Buffer
 from application.tcp_server.constant import REPLY, REQ_TYPE, REQ_SUB, REQ_DATA, REQ_TICK
 from application.tcp_server.fancy import CoreServer
@@ -18,7 +18,7 @@ class MarketServer(CoreServer):
         self.tick_origin = set()
 
         # 黑名单
-        self.blacklist = db.load_ip()
+        self.blacklist = blacklist_db.load_ip()
 
         self.buffers = {}
         self.subscribed_pool = {}
@@ -51,7 +51,6 @@ class MarketServer(CoreServer):
     async def process_tick(self, **kwargs):
         tick_data = kwargs.get("content")
         tick = loads(tick_data)
-        print("处理tick: ", tick.datetime)
 
         if tick.local_symbol not in self.buffers:
             self.buffers[tick.local_symbol] = Buffer(tick.local_symbol, self)
@@ -72,6 +71,6 @@ class MarketServer(CoreServer):
         if type not in REQ_TYPE:
             pass
         if type == 'tick':
-            self.tick_origin.add(address)
+            self.tick_origin.add(address[0])
         await self.funcs[type](content=content, stream=stream, address=address)
         await stream.write(REPLY['success'])

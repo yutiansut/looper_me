@@ -5,4 +5,4 @@ AUTH_REQUIRED = True
 # 默认的数据源数量
 KEY = 'fancy'
 
-ORIGIN_NUMBER = 5
+ORIGIN_NUMBER = 2

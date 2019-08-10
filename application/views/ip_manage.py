@@ -5,7 +5,7 @@ ip_manage views ----->
 from application.views import BaseHandle
 from application.tcp_server import md_server
 from application.common import true_return, false_return
-from application.model import db
+from application.model import blacklist_db
 
 class IpHandler(BaseHandle):
     def get(self):
@@ -19,13 +19,14 @@ class IpHandler(BaseHandle):
         todo = self.get_argument('todo', None)
         if not ip or not todo: return
         print(todo, ip)
+
         if todo == 'kill':
             md_server.global_connection.pop(ip).close()
             self.write(true_return(msg='封禁成功'))
         elif todo == 'pull_black':
             md_server.global_connection.pop(ip).close()
             md_server.blacklist.add(ip)
-            db.push(ip)
+            blacklist_db.push(ip)
             self.write(true_return(msg='拉黑成功'))
         else:
             self.write(false_return(msg='操作失败'))
