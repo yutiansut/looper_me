@@ -15,6 +15,14 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+import qs from 'qs'
+Vue.use(VueAxios, axios)
+Vue.prototype.$qs = qs
+
+const URL = 'http://127.0.0.1:8888'
+Vue.prototype.URL = URL
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -23,13 +31,16 @@ import '@/permission' // permission control
  * Currently MockJs will be used in the production environment,
  * please remove it before going online! ! !
  */
-import { mockXHR } from '../mock'
+import {
+  mockXHR
+} from '../mock'
 if (process.env.NODE_ENV === 'production') {
   mockXHR()
 }
-
 // set ElementUI lang to EN
-Vue.use(ElementUI, { locale })
+Vue.use(ElementUI, {
+  locale
+})
 
 Vue.config.productionTip = false
 

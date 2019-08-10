@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 /* Layout */
 import Layout from '@/layout'
-import ajax from "element-ui/packages/upload/src/ajax";
 
 Vue.use(Router)
 
@@ -30,76 +29,110 @@ Vue.use(Router)
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-export const constantRoutes = [
-  {
+export const constantRoutes = [{
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
   },
-
   {
     path: '/404',
     component: () => import('@/views/404'),
     hidden: true
   },
-
   {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
     children: [{
       path: 'dashboard',
-      name: 'Dashboard',
+      name: '控制台',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Ctpbee', icon: 'dashboard' }
+      meta: {
+        title: 'Ctpbee',
+        icon: 'dashboard'
+      }
     }]
   },
-
   {
     path: '/data_manager',
     component: Layout,
     redirect: '/example/table',
     name: '数据管理',
-    meta: { title: '数据管理', icon: 'example' },
-    children: [
-      {
+    meta: {
+      title: '数据管理',
+      icon: 'example'
+    },
+    children: [{
         path: 'table',
         name: 'Table',
         component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        meta: {
+          title: '数据下载',
+          icon: 'table'
+        }
       },
       {
         path: 'tree',
         name: 'Tree',
         component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        meta: {
+          title: '数据查找',
+          icon: 'tree'
+        }
       }
     ]
   },
-
+  {
+    path: '/download',
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'download',
+      component: () => import('@/views/download/index'),
+      meta: {
+        title: '下载'
+      }
+    }],
+    hidden: true
+  },
   {
     path: '/ip_manage',
     component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'ip_manage',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'ip管理', icon: 'form' }
+    children: [{
+      path: 'index',
+      name: 'ip_manage',
+      component: () => import('@/views/form/index'),
+      meta: {
+        title: 'IP管理',
+        icon: 'form'
       }
-    ]
+    }]
   },
   {
-    path: '/server_manage',
+    path: '/black_house',
     component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'data_server',
-        component: () => import('@/views/form/index'),
-        meta: { title: '源服务器管理', icon: 'form' }
+    children: [{
+      path: 'index',
+      name: 'black_house',
+      component: () => import('@/views/blackHouse/index'),
+      meta: {
+        title: '小黑屋',
+        icon: 'form'
       }
-    ]
+    }]
+  },
+  {
+    path: '/server',
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'server',
+      component: () => import('@/views/server/index'),
+      meta: {
+        title: '源服务器管理',
+        icon: 'form'
+      }
+    }]
   },
 
   {
@@ -111,28 +144,37 @@ export const constantRoutes = [
       title: '服务器配置项',
       icon: 'nested'
     },
-    children: [
-      {
+    children: [{
         path: 'base',
         component: () => import('@/views/nested/menu1/index'), // Parent router-view
         name: 'base',
-        meta: { title: '基础配置' }
+        meta: {
+          title: '基础配置'
+        }
       },
       {
         path: 'high_level',
         component: () => import('@/views/nested/menu2/index'),
-        meta: { title: '高级配置' }
+        meta: {
+          title: '高级配置'
+        }
       }
     ]
   },
 
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+  }
 ]
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({
+    y: 0
+  }),
   routes: constantRoutes
 })
 
@@ -144,4 +186,3 @@ export function resetRouter() {
   router.matcher = newRouter.matcher // reset router
 }
 export default router
-
