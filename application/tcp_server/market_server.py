@@ -1,6 +1,7 @@
 from ctpbee import loads
 
 from application.model import db
+from application.tcp_server.buffer import Buffer
 from application.tcp_server.constant import REPLY, REQ_TYPE, REQ_SUB, REQ_DATA, REQ_TICK
 from application.tcp_server.fancy import CoreServer
 
@@ -52,9 +53,9 @@ class MarketServer(CoreServer):
         tick = loads(tick_data)
         print("处理tick: ", tick.datetime)
 
-        # if tick.local_symbol not in self.buffers:
-        #     self.buffers[tick.local_symbol] = Buffer(tick.local_symbol, self)
-        # self.buffers[tick.local_symbol].push(tick)
+        if tick.local_symbol not in self.buffers:
+            self.buffers[tick.local_symbol] = Buffer(tick.local_symbol, self)
+        await self.buffers[tick.local_symbol].push(tick)
 
     async def process_data_req(self, **kwargs):
         """ 处理数据请求 """
